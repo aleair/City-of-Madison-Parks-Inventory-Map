@@ -44,7 +44,7 @@ const availableIcons = [
   "parkinglot-boattrailerandstandard", "parkinglot-standard", "pickleballcourts", "picnictable",
   "pier", "playground-inclusive", "playground-natureplay", "playground-other", "playground-standard",
   "portapotty", "reservablebaseballfield", "reservablefootball",
-  "reservablelacrosse", "reservablesoccer", "reservablesoftball", "reservableultimatefrisbee",
+  "reservablelacrosse", "reservable_soccer", "reservablesoftball", "reservableultimatefrisbee",
   "sandbox", "shadestructure", "skatepark", "skitrail", "sleddinghill", "splashpark",
   "tenniscourts", "trails", "volleyballcourts"
 ];
