@@ -1,50 +1,98 @@
+/* General page settings */
 html, body {
   margin: 0;
   padding: 0;
-  height: auto; /* <-- allow height to expand naturally */
-  min-height: 100%; /* <-- always at least 100% height */
+  font-family: Arial, sans-serif;
+  height: auto; /* Allow page to expand if needed */
+  min-height: 100vh; /* But at least fill the screen */
   width: 100%;
-  overflow-x: hidden; /* <-- prevent horizontal scrolling */
-  font-family: Arial, sans-serif; /* matches your site font */
 }
 
-/* Map section */
+/* Top blue header */
+header {
+  background-color: #004990;
+  color: white;
+  padding: 10px 20px;
+  text-align: center;
+  font-size: 22px;
+}
+
+/* Intro white banner */
+#intro {
+  padding: 10px 20px;
+  text-align: center;
+  background: white;
+  font-size: 16px;
+}
+
+/* Container for the map */
+#mapContainer {
+  position: relative;
+  width: 100%;
+  height: 75vh; /* Map height = 75% of screen */
+}
+
+/* The actual map */
 #mapid {
-  height: 90vh; /* 90% of viewport height for the map */
   width: 100%;
+  height: 100%;
 }
 
-/* Dropdown for basemap switching */
-#layerDropdown {
-  position: absolute;
-  bottom: 10px;     
-  left: 10px;       
+/* Basemap dropdown and other floating controls */
+#basemapDropdown,
+#treeSearch,
+#parkSearch,
+#loginButton {
   z-index: 1000;
-  padding: 5px;
-  border-radius: 5px;
   background: white;
   border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 5px;
+  position: absolute;
 }
 
-/* Make sure park list can be scrolled separately if needed   */
+/* Specific positioning */
+#basemapDropdown { bottom: 10px; left: 10px; height: 34px; }
+#treeSearch { bottom: 10px; right: 200px; width: 170px; height: 25px; }
+#parkSearch { bottom: 10px; right: 10px; width: 170px; height: 25px; }
+#loginButton { bottom: 10px; left: 50%; transform: translateX(-50%); font-size: 14px; height: 34px; cursor: pointer; }
+
+/* Toggles for layers */
+.toggleLayer {
+  z-index: 1000;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 5px;
+  position: absolute;
+}
+#toggleTreesLabel { top: 10px; right: 33px; }
+#toggleFacilitiesLabel { top: 40px; right: 10px; }
+
+/* Park List (below the map) */
 #parkList {
-  padding: 10px;
+  padding: 20px;
+  overflow-x: hidden;
+  overflow-y: auto;
   background: white;
   border-top: 1px solid #ccc;
   font-size: 14px;
-  margin-top: 20px;
+  max-width: 1200px;
+  margin: 40px auto 20px auto; /* Space above list and center it */
 }
 
+/* Grid layout for parks */
 #parkNames {
   list-style: none;
   padding-left: 0;
   margin: 0;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, 1fr); /* 4 columns */
   gap: 10px 20px;
   text-align: center;
 }
 
+/* Individual park names */
 #parkNames li {
   cursor: pointer;
   padding: 5px;
@@ -54,6 +102,20 @@ html, body {
   transition: background 0.3s;
 }
 
+/* Hover effect for parks */
 #parkNames li:hover {
   background: #e0f0ff;
+}
+
+/* --- Responsive Tweaks for Mobile Phones --- */
+@media (max-width: 768px) {
+  #mapContainer {
+    height: 60vh; /* Make map a bit smaller on phones */
+  }
+  #parkNames {
+    grid-template-columns: repeat(2, 1fr); /* Only 2 columns on small screens */
+  }
+  #treeSearch, #parkSearch {
+    width: 140px; /* Narrower search bars */
+  }
 }
