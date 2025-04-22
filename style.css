@@ -1,24 +1,95 @@
 html, body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    width: 100%;
-  }
-  
-  #mapid {
-    height: 90vh;
-    width: 100%;
-  }
-  
-  #layerDropdown {
-    position: absolute;
-    bottom: 10px;     
-    left: 10px;       
-    z-index: 1000;
-    padding: 5px;
-    border-radius: 5px;
-    background: white;
-    border: 1px solid #ccc;
-  }
-  
-  
+  margin: 0;
+  padding: 0;
+  height: auto; /* <<-- Changed from 100% to auto */
+  width: 100%;
+  overflow-x: hidden; /* Prevent sideways scrolling */
+  font-family: Arial, sans-serif;
+}
+
+header {
+  background-color: #004990;
+  color: white;
+  padding: 10px 20px;
+  text-align: center;
+  font-size: 22px;
+}
+
+#intro {
+  padding: 10px 20px;
+  text-align: center;
+  background: white;
+  font-size: 16px;
+}
+
+/* --- Map Container --- */
+#mapContainer {
+  position: relative;
+  width: 100%;
+  height: 75vh; /* <<-- Important: make it less than full screen */
+  min-height: 300px; /* In case mobile screen is tiny */
+}
+
+/* --- Map Itself --- */
+#mapid {
+  width: 100%;
+  height: 100%;
+}
+
+/* --- Controls --- */
+#basemapDropdown,
+#treeSearch,
+#parkSearch,
+#loginButton {
+  z-index: 1000;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 5px;
+  position: absolute;
+}
+#basemapDropdown { bottom: 10px; left: 10px; height: 34px; }
+#treeSearch { bottom: 10px; right: 200px; width: 170px; height: 25px; }
+#parkSearch { bottom: 10px; right: 10px; width: 170px; height: 25px; }
+#loginButton { bottom: 10px; left: 50%; transform: translateX(-50%); font-size: 14px; height: 34px; cursor: pointer; }
+
+/* --- Toggles --- */
+.toggleLayer {
+  z-index: 1000;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 5px;
+  position: absolute;
+}
+#toggleTreesLabel { top: 10px; right: 33px; }
+#toggleFacilitiesLabel { top: 40px; right: 10px; }
+
+/* --- Park List --- */
+#parkList {
+  padding: 10px;
+  background: white;
+  border-top: 1px solid #ccc;
+  font-size: 14px;
+  margin-top: 40px; /* Adds a little space below map */
+}
+#parkNames {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px 20px;
+  text-align: center;
+}
+#parkNames li {
+  cursor: pointer;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background: #f9f9f9;
+  transition: background 0.3s;
+}
+#parkNames li:hover {
+  background: #e0f0ff;
+}
