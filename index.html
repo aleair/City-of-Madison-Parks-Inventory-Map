@@ -5,24 +5,18 @@
   <title>Park Facilities Map</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Link Leaflet CSS for map styling -->
+  <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <!-- Link Leaflet Geocoder plugin CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
-  <!-- Link to your own stylesheet -->
   <link rel="stylesheet" href="style.css" />
 
-  <!-- Internal Styles -->
   <style>
-    /* General page and font settings */
     html, body {
       height: 100%;
       margin: 0;
       padding: 0;
       font-family: Arial, sans-serif;
     }
-
-    /* Blue header banner */
     header {
       background-color: #004990;
       color: white;
@@ -30,32 +24,26 @@
       text-align: center;
       font-size: 22px;
     }
-
-    /* White intro banner */
     #intro {
       padding: 10px 20px;
       text-align: center;
       background: white;
       font-size: 16px;
     }
-
-    /* Container for the map */
     #mapContainer {
       position: relative;
       width: 100%;
-      height: calc(100vh - 130px); /* Full height minus headers */
+      height: calc(100vh - 130px);
     }
-
-    /* Map itself */
     #mapid {
       width: 100%;
       height: 100%;
     }
 
-    /* Style for the dropdown, search boxes, and login button */
     #basemapDropdown,
     #treeSearch,
     #parkSearch,
+    #mobilePromptButton,
     #loginButton {
       z-index: 1000;
       background: white;
@@ -65,13 +53,13 @@
       position: absolute;
     }
 
-    /* Positioning of map controls */
+    /* Updated positions */
     #basemapDropdown { bottom: 10px; left: 10px; height: 34px; }
+    #loginButton { bottom: 10px; left: 175px; height: 34px; } /* moved right of dropdown */
     #treeSearch { bottom: 10px; right: 200px; width: 170px; height: 25px; }
     #parkSearch { bottom: 10px; right: 10px; width: 170px; height: 25px; }
-    #loginButton { bottom: 10px; left: 50%; transform: translateX(-50%); font-size: 14px; height: 34px; cursor: pointer; }
+    #mobilePromptButton { bottom: 10px; left: 50%; transform: translateX(-50%); font-size: 11px; height: 34px; cursor: default; pointer-events: none; }
 
-    /* Toggle layer checkboxes */
     .toggleLayer {
       z-index: 1000;
       background: white;
@@ -80,12 +68,9 @@
       padding: 5px;
       position: absolute;
     }
-
-    /* Position toggles */
     #toggleTreesLabel { top: 10px; right: 33px; }
     #toggleFacilitiesLabel { top: 40px; right: 10px; }
 
-    /* Styles for the Park List under the map */
     #parkList {
       padding: 10px;
       overflow-y: auto;
@@ -93,21 +78,17 @@
       background: white;
       border-top: 1px solid #ccc;
       font-size: 14px;
-      margin-top: 40px; /* Space between map and list */
+      margin-top: 40px;
     }
-
-    /* Styles for the list of parks */
     #parkNames {
       list-style: none;
       padding-left: 0;
       margin: 0;
       display: grid;
-      grid-template-columns: repeat(4, 1fr); /* 4 columns */
-      gap: 10px 20px; /* Gap between items */
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px 20px;
       text-align: center;
     }
-
-    /* Each park name item */
     #parkNames li {
       cursor: pointer;
       padding: 5px;
@@ -116,8 +97,6 @@
       background: #f9f9f9;
       transition: background 0.3s;
     }
-
-    /* Hover effect for park list items */
     #parkNames li:hover {
       background: #e0f0ff;
     }
@@ -139,52 +118,49 @@
   <!-- Map Container -->
   <div id="mapContainer">
 
-    <!-- Basemap Dropdown Selector -->
+    <!-- Basemap Dropdown -->
     <select id="basemapDropdown">
       <option value="streets">Streets</option>
       <option value="aerial">Aerial Photography</option>
     </select>
 
-    <!-- Toggle Trees Checkbox -->
+    <!-- Login Button moved next to Basemap -->
+    <button id="loginButton">Login</button>
+
+    <!-- Toggle Trees -->
     <label id="toggleTreesLabel" class="toggleLayer">
       <input type="checkbox" id="toggleTrees" checked> Trees
     </label>
 
-    <!-- Toggle Facilities Checkbox -->
+    <!-- Toggle Facilities -->
     <label id="toggleFacilitiesLabel" class="toggleLayer">
       <input type="checkbox" id="toggleFacilities" checked> Facilities
     </label>
 
-    <!-- Facility Search Box -->
+    <!-- Park Search Box -->
     <input type="text" id="parkSearch" placeholder="Parks, Facilities, or Status..." />
 
     <!-- Tree Search Box -->
     <input type="text" id="treeSearch" placeholder="Species, ID, or Diameter" />
 
-    <!-- Login Button -->
-    <button id="loginButton">Login</button>
+    <!-- NEW Mobile Prompt Button -->
+    <button id="mobilePromptButton">If Mobile, Tap here, Drag up</button>
 
-    <!-- Actual Map -->
+    <!-- Map -->
     <div id="mapid"></div>
-
   </div>
 
-  <!-- List of Parks below the Map -->
+  <!-- Park List BELOW Map -->
   <div id="parkList">
     <h3 style="text-align:center; margin-top: 0;">Find a Park, click a button</h3>
-    <ul id="parkNames"></ul> <!-- Park names will be populated here -->
+    <ul id="parkNames"></ul>
   </div>
 
-  <!-- Import Leaflet Library -->
+  <!-- JS Scripts -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <!-- Import Leaflet Geocoder Plugin -->
   <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
-
-  <!-- Import Firebase Libraries -->
   <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
-
-  <!-- Link to Your Custom JS -->
   <script src="parkfacilities.js"></script>
 
 </body>
