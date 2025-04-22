@@ -166,7 +166,7 @@ function createPopupContent(feature, layer) {
 }
 
 // Load Parks Layer (parks.geojson) and Create Park List
-fetch('data/parks.geojson')
+fetch('data/Parks.geojson')
   .then(response => response.json())
   .then(data => {
     parksLayer = L.geoJSON(data, {
