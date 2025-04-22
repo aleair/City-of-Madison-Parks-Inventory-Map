@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Park Facilities Map</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+  <link rel="stylesheet" href="style.css" />
+
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+    header {
+      background-color: #004990;
+      color: white;
+      padding: 10px 20px;
+      text-align: center;
+      font-size: 22px;
+    }
+    #intro {
+      padding: 10px 20px;
+      text-align: center;
+      background: white;
+      font-size: 16px;
+    }
+    #mapContainer {
+      position: relative;
+      width: 100%;
+      height: calc(100vh - 130px); /* Adjusted to account for narrower banners */
+    }
+    #mapid {
+      width: 100%;
+      height: 100%;
+    }
+    #basemapDropdown,
+    #treeSearch,
+    #parkSearch,
+    #loginButton {
+      z-index: 1000;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 5px;
+      position: absolute;
+    }
+    #basemapDropdown { bottom: 10px; left: 10px; height: 34px; }
+    #treeSearch { bottom: 10px; right: 200px; width: 170px; height: 25px; }
+    #parkSearch { bottom: 10px; right: 10px; width: 170px; height: 25px; }
+    #loginButton { bottom: 10px; left: 50%; transform: translateX(-50%); font-size: 14px; height: 34px; cursor: pointer; }
+    .toggleLayer {
+      z-index: 1000;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 5px;
+      position: absolute;
+    }
+    #toggleTreesLabel { top: 10px; right: 33px; }
+    #toggleFacilitiesLabel { top: 40px; right: 10px; }
+
+    /* New styles for Park List */
+    #parkList {
+      padding: 10px;
+      overflow-y: auto;
+      max-height: 400px;
+      background: white;
+      border-top: 1px solid #ccc;
+      font-size: 14px;
+      margin-top: 40px; /* More space between map and list */
+    }
+    #parkNames {
+      list-style: none;
+      padding-left: 0;
+      margin: 0;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr); /* 4 columns */
+      gap: 10px 20px; /* spacing between items */
+      text-align: center;
+    }
+    #parkNames li {
+      cursor: pointer;
+      padding: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background: #f9f9f9;
+      transition: background 0.3s;
+    }
+    #parkNames li:hover {
+      background: #e0f0ff;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Blue Banner -->
+  <header>
+    Park Facilities Map
+  </header>
+
+  <!-- White Banner -->
+  <div id="intro">
+    Welcome! Use the search boxes or map below to find Parks, Facilities, and Trees.
+  </div>
+
+  <!-- Map Container -->
+  <div id="mapContainer">
+    <!-- Basemap Dropdown -->
+    <select id="basemapDropdown">
+      <option value="streets">Streets</option>
+      <option value="aerial">Aerial Photography</option>
+    </select>
+
+    <!-- Toggle Trees -->
+    <label id="toggleTreesLabel" class="toggleLayer">
+      <input type="checkbox" id="toggleTrees" checked> Trees
+    </label>
+
+    <!-- Toggle Facilities -->
+    <label id="toggleFacilitiesLabel" class="toggleLayer">
+      <input type="checkbox" id="toggleFacilities" checked> Facilities
+    </label>
+
+    <!-- Search Boxes and Login -->
+    <input type="text" id="parkSearch" placeholder="Parks, Facilities, or Status..." />
+    <input type="text" id="treeSearch" placeholder="Species, ID, or Diameter" />
+    <button id="loginButton">Login</button>
+
+    <!-- Map -->
+    <div id="mapid"></div>
+  </div>
+
+  <!-- Park List BELOW the Map -->
+  <div id="parkList">
+    <h3 style="text-align:center; margin-top: 0;">Find a Park</h3>
+    <ul id="parkNames"></ul>
+  </div>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+
+  <!-- Your JS -->
+  <script src="parkfacilities.js"></script>
+
+</body>
+</html>
