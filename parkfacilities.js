@@ -1,4 +1,4 @@
-// Initialize Firebase
+// --- Initialize Firebase ---
 const firebaseConfig = {
   apiKey: "AIzaSyC22hygZRCAWTgN2NXybIM8Z169rZiRvio",
   authDomain: "geog778-project.firebaseapp.com",
@@ -10,7 +10,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore(); // Firestore database reference
 
-// Initialize Leaflet Map
+// --- Initialize Leaflet Map ---
 const map = L.map('mapid').setView([43.0751702, -89.3836288], 12);
 
 // Define base layers
@@ -20,9 +20,9 @@ const streets = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}
 const aerial = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
   attribution: 'Tiles &copy; Esri, Maxar, Earthstar Geographics, and the GIS User Community'
 });
-streets.addTo(map); 
+streets.addTo(map); // Add default basemap
 
-// Basemap Dropdown
+// --- Basemap Switching ---
 const basemapDropdown = document.getElementById('basemapDropdown');
 basemapDropdown.addEventListener('change', function () {
   const selected = this.value;
@@ -35,7 +35,7 @@ basemapDropdown.addEventListener('change', function () {
   }
 });
 
-// Setup available facility icons
+// --- Setup available facility icons ---
 const availableIcons = [
   "basketball-other", "basketballcourt-full", "basketballcourt-half", "basketballcourt-smallfullcourt",
   "b-cyclestalls", "beach", "benchswing", "boatmooring", "building-reservableshelterwithrestrooms",
@@ -59,14 +59,14 @@ function createIcon(iconName) {
   });
 }
 
-// Global Variables
+// --- Global Variables ---
 let facilitiesLayer;
 let parksLayer;
 let treesLayer;
 let userMoved = false;
 let isLoggedIn = false;
 
-// Load Facilities Layer (yearround.geojson)
+// --- Load Facilities Layer (yearround.geojson) ---
 fetch('data/yearround.geojson')
   .then(response => response.json())
   .then(async (data) => {
@@ -100,7 +100,7 @@ fetch('data/yearround.geojson')
     }).addTo(map);
   });
 
-// Create Popup Content for Facilities
+// --- Create Popup Content for Facilities ---
 function createPopupContent(feature, layer) {
   let popupContent = `
     <div>
@@ -165,8 +165,8 @@ function createPopupContent(feature, layer) {
   });
 }
 
-// Load Parks Layer (parks.geojson) and Create Park List
-fetch('data/Parks.geojson')
+// --- Load Parks Layer (parks.geojson) and Create Park List ---
+fetch('data/parks.geojson')
   .then(response => response.json())
   .then(data => {
     parksLayer = L.geoJSON(data, {
@@ -206,7 +206,7 @@ fetch('data/Parks.geojson')
     });
   });
 
-// Load Trees Layer (ParkTrees.geojson)
+// --- Load Trees Layer (ParkTrees.geojson) ---
 fetch('data/ParkTrees.geojson')
   .then(response => response.json())
   .then(data => {
@@ -243,7 +243,7 @@ fetch('data/ParkTrees.geojson')
     });
   });
 
-// Facilities Toggle
+// --- Facilities Toggle ---
 document.getElementById('toggleFacilities').addEventListener('change', function () {
   if (this.checked) {
     map.addLayer(facilitiesLayer);
@@ -252,7 +252,7 @@ document.getElementById('toggleFacilities').addEventListener('change', function 
   }
 });
 
-// Login Button
+// --- Login Button ---
 document.getElementById('loginButton').addEventListener('click', function () {
   const password = prompt("Enter password:");
   if (password === "madison") {
@@ -264,7 +264,7 @@ document.getElementById('loginButton').addEventListener('click', function () {
   }
 });
 
-// Restore Facilities on Move if Needed
+// --- Restore Facilities on Move if Needed ---
 map.on('moveend', function () {
   if (userMoved && facilitiesLayer) {
     const facilitiesToggle = document.getElementById('toggleFacilities');
@@ -281,7 +281,7 @@ map.on('moveend', function () {
   }
 });
 
-// Facility Search Functionality
+// --- Facility Search Functionality ---
 const parkSearchInput = document.getElementById('parkSearch');
 parkSearchInput.addEventListener('change', function () {
   const searchValue = this.value.toLowerCase().trim();
@@ -322,7 +322,7 @@ parkSearchInput.addEventListener('change', function () {
   }
 });
 
-// Tree Search
+// --- Tree Search Functionality ---
 const treeSearchInput = document.getElementById('treeSearch');
 treeSearchInput.addEventListener('change', function () {
   const searchValue = this.value.toLowerCase().trim();
