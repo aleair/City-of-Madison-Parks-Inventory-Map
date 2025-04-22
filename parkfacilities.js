@@ -38,12 +38,12 @@ basemapDropdown.addEventListener('change', function () {
 // --- Setup available facility icons ---
 const availableIcons = [
   "basketball-other", "basketballcourt-full", "basketballcourt-half", "basketballcourt-smallfullcourt",
-  "b-cyclestalls", "beach", "benchswing", "boatmooring", "building-reservableshelterwithrestrooms",
+  "b-cyclestalls", "beach", "boatmooring", "building-reservableshelterwithrestrooms",
   "canoekayakrental", "canoekayaklaunch", "concreteboatramp", "discgolfcourse", "dogoffleash",
   "gagaballpit", "gravelboatlaunchramp", "iceskating", "parkinglot-boattrailer",
   "parkinglot-boattrailerandstandard", "parkinglot-standard", "pickleballcourts", "picnictable",
   "pier", "playground-inclusive", "playground-natureplay", "playground-other", "playground-standard",
-  "portapotty", "pumptrack", "rentablecanoekayakrack", "reservablebaseballfield", "reservablefootball",
+  "portapotty", "reservablebaseballfield", "reservablefootball",
   "reservablelacrosse", "reservablesoccer", "reservablesoftball", "reservableultimatefrisbee",
   "sandbox", "shadestructure", "skatepark", "skitrail", "sleddinghill", "splashpark",
   "tenniscourts", "trails", "volleyballcourts"
