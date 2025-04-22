@@ -48,6 +48,55 @@ const availableIcons = [
   "sandbox", "shadestructure", "skatepark", "skitrail", "sleddinghill", "splashpark",
   "tenniscourts", "trails", "volleyballcourts"
 ];
+// Create the Element Icon Buttons
+const elementButtonsContainer = document.getElementById('elementButtons');
+
+// Track active element filter
+let activeElementFilter = null;
+
+availableIcons.forEach(iconName => {
+  const button = document.createElement('button');
+  button.className = 'elementButton';
+  button.style.backgroundImage = `url(icons/${iconName}.png)`;
+  button.title = iconName; // Optional: tooltip for accessibility
+
+  button.addEventListener('click', () => {
+    activeElementFilter = iconName;
+    filterFacilitiesByElement(iconName);
+  });
+
+  elementButtonsContainer.appendChild(button);
+});
+
+// Function to filter Facilities by Element
+function filterFacilitiesByElement(elementName) {
+  if (!facilitiesLayer) return;
+
+  facilitiesLayer.eachLayer(layer => {
+    const featureElement = (layer.feature.properties?.ELEMENT || "").replace(/\s+/g, '').toLowerCase();
+    if (featureElement.includes(elementName)) {
+      map.addLayer(layer);
+    } else {
+      map.removeLayer(layer);
+    }
+  });
+
+  map.once('zoomend', () => {
+    if (map.getZoom() >= 15) {
+      showAllFacilities();
+    }
+  });
+}
+
+// Function to show all Facilities again
+function showAllFacilities() {
+  if (!facilitiesLayer) return;
+  facilitiesLayer.eachLayer(layer => {
+    map.addLayer(layer);
+  });
+  activeElementFilter = null;
+}
+
 
 // Function to create icons based on facility type
 function createIcon(iconName) {
