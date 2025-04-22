@@ -39,7 +39,7 @@ basemapDropdown.addEventListener('change', function () {
 const availableIcons = [
   "basketball-other", "basketballcourt-full", "basketballcourt-half", "basketballcourt-smallfullcourt",
   "b-cyclestalls", "beach", "boatmooring", "building-reservableshelterwithrestrooms",
-  "canoekayakrental", "canoekayaklaunch", "concreteboatramp", "discgolfcourse", "dogoffleash",
+  "canoekayakrental", "concreteboatramp", "discgolfcourse", "dogoffleash",
   "gagaballpit", "gravelboatlaunchramp", "iceskating", "parkinglot-boattrailer",
   "parkinglot-boattrailerandstandard", "parkinglot-standard", "pickleballcourts", "picnictable",
   "pier", "playground-inclusive", "playground-natureplay", "playground-other", "playground-standard",
