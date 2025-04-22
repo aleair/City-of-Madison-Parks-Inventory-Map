@@ -26,7 +26,7 @@ html, body {
   border: 1px solid #ccc;
 }
 
-/* Make sure park list can be scrolled separately if needed */
+/* Make sure park list can be scrolled separately if needed   */
 #parkList {
   padding: 10px;
   background: white;
