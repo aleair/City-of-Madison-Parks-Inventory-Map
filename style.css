@@ -48,7 +48,7 @@ header {
   transform: scale(1.1);
   border-color: #007BFF;
 }
-/* --- Map Container --- */
+/* --- Map  Container --- */
 #mapContainer {
   position: relative;
   width: 100%;

@@ -35,7 +35,7 @@ basemapDropdown.addEventListener('change', function () {
   }
 });
 
-// --- Setup available facility icons ---
+// Setup available facility icons
 const availableIcons = [
   "basketball-other", "basketballcourt-full", "basketballcourt-half", "basketballcourt-smallfullcourt",
   "b-cyclestalls", "beach", "boatmooring", "building-reservableshelterwithrestrooms",
