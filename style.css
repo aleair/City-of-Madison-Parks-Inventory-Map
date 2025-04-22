@@ -65,6 +65,24 @@ header {
 #toggleTreesLabel { top: 10px; right: 33px; }
 #toggleFacilitiesLabel { top: 40px; right: 10px; }
 
+#mobilePromptButton { 
+  bottom: 50px; 
+  left: 50%; 
+  transform: translateX(-50%); 
+  font-size: 14px; 
+  height: 34px; 
+  cursor: default; 
+  pointer-events: none; 
+}
+
+/* ONLY show on mobile */
+@media (min-width: 768px) {
+  #mobilePromptButton {
+    display: none;
+  }
+}
+
+
 /* --- Park List --- */
 #parkList {
   padding: 10px;
