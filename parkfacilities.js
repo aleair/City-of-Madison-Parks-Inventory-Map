@@ -8,21 +8,19 @@ const firebaseConfig = {
   appId: "1:580713998574:web:923c34fcb888c4be69abff"
 };
 firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore(); // Firestore database reference
+const db = firebase.firestore();
 
 // --- Initialize Leaflet Map ---
 const map = L.map('mapid').setView([43.0751702, -89.3836288], 12);
 
-// Define base layers
 const streets = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
   attribution: '&copy; OpenStreetMap contributors & CartoDB'
 });
 const aerial = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
   attribution: 'Tiles &copy; Esri, Maxar, Earthstar Geographics, and the GIS User Community'
 });
-streets.addTo(map); // Add default basemap
+streets.addTo(map);
 
-// --- Basemap Switching ---
 const basemapDropdown = document.getElementById('basemapDropdown');
 basemapDropdown.addEventListener('change', function () {
   const selected = this.value;
@@ -35,7 +33,7 @@ basemapDropdown.addEventListener('change', function () {
   }
 });
 
-// Setup available facility icons
+// --- Facility Icons ---
 const availableIcons = [
   "basketball-other", "basketballcourt-full", "basketballcourt-half", "basketballcourt-smallfullcourt",
   "b-cyclestalls", "beach", "boatmooring", "building-reservableshelterwithrestrooms",
@@ -48,57 +46,58 @@ const availableIcons = [
   "sandbox", "shadestructure", "skatepark", "skitrail", "sleddinghill", "splashpark",
   "tenniscourts", "trails", "volleyballcourts"
 ];
-// Create the Element Icon Buttons
+
 const elementButtonsContainer = document.getElementById('elementButtons');
+let activeElementFilters = [];
 
-// Track active element filter
-let activeElementFilter = null;
-
+// --- Create Icon Buttons ---
 availableIcons.forEach(iconName => {
   const button = document.createElement('button');
   button.className = 'elementButton';
   button.style.backgroundImage = `url(icons/${iconName}.png)`;
-  button.title = iconName; // Optional: tooltip for accessibility
+  button.title = iconName;
 
   button.addEventListener('click', () => {
-    activeElementFilter = iconName;
-    filterFacilitiesByElement(iconName);
+    if (button.classList.contains('selected')) {
+      button.classList.remove('selected');
+      activeElementFilters = activeElementFilters.filter(item => item !== iconName);
+    } else {
+      button.classList.add('selected');
+      activeElementFilters.push(iconName);
+    }
+    filterFacilitiesByElements();
   });
 
   elementButtonsContainer.appendChild(button);
 });
 
-// Function to filter Facilities by Element
-function filterFacilitiesByElement(elementName) {
+// --- Filter Facilities based on Multiple Selections ---
+function filterFacilitiesByElements() {
   if (!facilitiesLayer) return;
+
+  if (activeElementFilters.length === 0) {
+    showAllFacilities();
+    return;
+  }
 
   facilitiesLayer.eachLayer(layer => {
     const featureElement = (layer.feature.properties?.ELEMENT || "").replace(/\s+/g, '').toLowerCase();
-    if (featureElement.includes(elementName)) {
+    if (activeElementFilters.some(icon => featureElement.includes(icon))) {
       map.addLayer(layer);
     } else {
       map.removeLayer(layer);
     }
   });
-
-  map.once('zoomend', () => {
-    if (map.getZoom() >= 15) {
-      showAllFacilities();
-    }
-  });
 }
 
-// Function to show all Facilities again
 function showAllFacilities() {
   if (!facilitiesLayer) return;
   facilitiesLayer.eachLayer(layer => {
     map.addLayer(layer);
   });
-  activeElementFilter = null;
 }
 
-
-// Function to create icons based on facility type
+// --- Create Custom Icon ---
 function createIcon(iconName) {
   return L.icon({
     iconUrl: `icons/${iconName}.png`,
@@ -115,7 +114,7 @@ let treesLayer;
 let userMoved = false;
 let isLoggedIn = false;
 
-// --- Load Facilities Layer (yearround.geojson) ---
+// --- Load Facilities Layer ---
 fetch('data/yearround.geojson')
   .then(response => response.json())
   .then(async (data) => {
@@ -149,7 +148,7 @@ fetch('data/yearround.geojson')
     }).addTo(map);
   });
 
-// --- Create Popup Content for Facilities ---
+// --- Popup Content Creation ---
 function createPopupContent(feature, layer) {
   let popupContent = `
     <div>
@@ -181,7 +180,6 @@ function createPopupContent(feature, layer) {
 
   layer.bindPopup(popupContent);
 
-  // Save status if user is logged in
   layer.on('popupopen', function () {
     if (isLoggedIn) {
       const oldButton = document.getElementById('saveStatusButton');
@@ -214,7 +212,7 @@ function createPopupContent(feature, layer) {
   });
 }
 
-// --- Load Parks Layer (parks.geojson) and Create Park List ---
+// --- Load Parks Layer ---
 fetch('data/Parks.geojson')
   .then(response => response.json())
   .then(data => {
@@ -227,7 +225,6 @@ fetch('data/Parks.geojson')
       }
     }).addTo(map);
 
-    // Create Park List
     const parkNamesList = document.getElementById('parkNames');
     const parks = [];
 
@@ -243,32 +240,26 @@ fetch('data/Parks.geojson')
     parks.forEach(park => {
       const li = document.createElement('li');
       li.textContent = park.name;
-      li.style.cursor = 'pointer';
-      li.style.padding = '3px 0';
-
       li.addEventListener('click', () => {
         map.fitBounds(park.layer.getBounds(), { maxZoom: 16 });
         park.layer.openPopup();
       });
-
       parkNamesList.appendChild(li);
     });
   });
 
-// --- Load Trees Layer (ParkTrees.geojson) ---
+// --- Load Trees Layer ---
 fetch('data/ParkTrees.geojson')
   .then(response => response.json())
   .then(data => {
     treesLayer = L.geoJSON(data, {
-      pointToLayer: (feature, latlng) => {
-        return L.circleMarker(latlng, {
-          radius: 3,
-          fillColor: "#8B4513",
-          color: "#8B4513",
-          weight: 0,
-          fillOpacity: 0.9
-        });
-      },
+      pointToLayer: (feature, latlng) => L.circleMarker(latlng, {
+        radius: 3,
+        fillColor: "#8B4513",
+        color: "#8B4513",
+        weight: 0,
+        fillOpacity: 0.9
+      }),
       onEachFeature: (feature, layer) => {
         const props = feature.properties;
         layer.bindPopup(`
@@ -280,9 +271,8 @@ fetch('data/ParkTrees.geojson')
           </div>
         `);
       }
-    }).addTo(map);
+    });
 
-    // Tree toggle control
     document.getElementById('toggleTrees').addEventListener('change', function () {
       if (this.checked) {
         map.addLayer(treesLayer);
@@ -301,7 +291,7 @@ document.getElementById('toggleFacilities').addEventListener('change', function 
   }
 });
 
-// --- Login Button ---
+// --- Login ---
 document.getElementById('loginButton').addEventListener('click', function () {
   const password = prompt("Enter password:");
   if (password === "madison") {
@@ -313,7 +303,7 @@ document.getElementById('loginButton').addEventListener('click', function () {
   }
 });
 
-// --- Restore Facilities on Move if Needed ---
+// --- Restore Facilities after Move ---
 map.on('moveend', function () {
   if (userMoved && facilitiesLayer) {
     const facilitiesToggle = document.getElementById('toggleFacilities');
@@ -330,7 +320,7 @@ map.on('moveend', function () {
   }
 });
 
-// --- Facility Search Functionality ---
+// --- Facility Search ---
 const parkSearchInput = document.getElementById('parkSearch');
 parkSearchInput.addEventListener('change', function () {
   const searchValue = this.value.toLowerCase().trim();
@@ -371,7 +361,7 @@ parkSearchInput.addEventListener('change', function () {
   }
 });
 
-// --- Tree Search Functionality ---
+// --- Tree Search ---
 const treeSearchInput = document.getElementById('treeSearch');
 treeSearchInput.addEventListener('change', function () {
   const searchValue = this.value.toLowerCase().trim();
@@ -414,3 +404,13 @@ treeSearchInput.addEventListener('change', function () {
     alert("No matching Tree Species, Site ID, or Diameter found.");
   }
 });
+
+// --- Clear Icon Selection on Search Focus ---
+function clearIconSelection() {
+  document.querySelectorAll('.elementButton').forEach(btn => btn.classList.remove('selected'));
+  activeElementFilters = [];
+  showAllFacilities();
+}
+parkSearchInput.addEventListener('focus', clearIconSelection);
+treeSearchInput.addEventListener('focus', clearIconSelection);
+
