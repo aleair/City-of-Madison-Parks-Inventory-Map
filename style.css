@@ -56,7 +56,7 @@ header {
   box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
 }
 
-/* --- Map Container --- */
+/* Map Container */
 #mapContainer {
   position: relative;
   width: 100%;
@@ -69,7 +69,7 @@ header {
   height: 100%;
 }
 
-/* --- Controls --- */
+/* Controls */
 #basemapDropdown,
 #treeSearch,
 #parkSearch,
@@ -87,7 +87,7 @@ header {
 #parkSearch { bottom: 10px; right: 10px; width: 170px; height: 25px; }
 #loginButton { bottom: 10px; left: 175px; font-size: 14px; height: 34px; cursor: pointer; }
 
-/* --- Toggles --- */
+/* Toggles */
 .toggleLayer {
   z-index: 1000;
   background: white;

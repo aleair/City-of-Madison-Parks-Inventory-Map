@@ -1,4 +1,4 @@
-// --- Initialize Firebase ---
+// Initialize Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyC22hygZRCAWTgN2NXybIM8Z169rZiRvio",
   authDomain: "geog778-project.firebaseapp.com",
@@ -10,7 +10,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-// --- Initialize Leaflet Map ---
+// Initialize Leaflet Map
 const map = L.map('mapid').setView([43.0751702, -89.3836288], 12);
 
 const streets = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
@@ -33,7 +33,7 @@ basemapDropdown.addEventListener('change', function () {
   }
 });
 
-// --- Facility Icons ---
+// Facility Icons
 const availableIcons = [
   "basketball-other", "basketballcourt-full", "basketballcourt-half", "basketballcourt-smallfullcourt",
   "b-cyclestalls", "beach", "boatmooring", "building-reservableshelterwithrestrooms",
@@ -50,7 +50,7 @@ const availableIcons = [
 const elementButtonsContainer = document.getElementById('elementButtons');
 let activeElementFilters = [];
 
-// --- Create Icon Buttons ---
+// Create Icon Buttons
 availableIcons.forEach(iconName => {
   const button = document.createElement('button');
   button.className = 'elementButton';
@@ -71,7 +71,7 @@ availableIcons.forEach(iconName => {
   elementButtonsContainer.appendChild(button);
 });
 
-// --- Filter Facilities based on Multiple Selections ---
+// Filter Facilities based on Multiple Selections
 function filterFacilitiesByElements() {
   if (!facilitiesLayer) return;
 
@@ -97,7 +97,7 @@ function showAllFacilities() {
   });
 }
 
-// --- Create Custom Icon ---
+// Create Custom Icon
 function createIcon(iconName) {
   return L.icon({
     iconUrl: `icons/${iconName}.png`,
@@ -107,14 +107,14 @@ function createIcon(iconName) {
   });
 }
 
-// --- Global Variables ---
+// Global Variables
 let facilitiesLayer;
 let parksLayer;
 let treesLayer;
 let userMoved = false;
 let isLoggedIn = false;
 
-// --- Load Facilities Layer ---
+// Load Facilities Layer
 fetch('data/yearround.geojson')
   .then(response => response.json())
   .then(async (data) => {
@@ -148,7 +148,7 @@ fetch('data/yearround.geojson')
     }).addTo(map);
   });
 
-// --- Popup Content Creation ---
+// Popup Content Creation
 function createPopupContent(feature, layer) {
   let popupContent = `
     <div>
@@ -212,7 +212,7 @@ function createPopupContent(feature, layer) {
   });
 }
 
-// --- Load Parks Layer ---
+// Load Parks Layer
 fetch('data/Parks.geojson')
   .then(response => response.json())
   .then(data => {
@@ -248,7 +248,7 @@ fetch('data/Parks.geojson')
     });
   });
 
-// --- Load Trees Layer ---
+// Load Trees Layer
 fetch('data/ParkTrees.geojson')
   .then(response => response.json())
   .then(data => {
@@ -282,7 +282,7 @@ fetch('data/ParkTrees.geojson')
     });
   });
 
-// --- Facilities Toggle ---
+// Facilities Toggle
 document.getElementById('toggleFacilities').addEventListener('change', function () {
   if (this.checked) {
     map.addLayer(facilitiesLayer);
@@ -291,7 +291,7 @@ document.getElementById('toggleFacilities').addEventListener('change', function 
   }
 });
 
-// --- Login ---
+// Login
 document.getElementById('loginButton').addEventListener('click', function () {
   const password = prompt("Enter password:");
   if (password === "madison") {
@@ -303,7 +303,7 @@ document.getElementById('loginButton').addEventListener('click', function () {
   }
 });
 
-// --- Restore Facilities after Move ---
+// Restore Facilities after use moves screen
 map.on('moveend', function () {
   if (userMoved && facilitiesLayer) {
     const facilitiesToggle = document.getElementById('toggleFacilities');
@@ -320,7 +320,7 @@ map.on('moveend', function () {
   }
 });
 
-// --- Facility Search ---
+// Facility Search
 const parkSearchInput = document.getElementById('parkSearch');
 parkSearchInput.addEventListener('change', function () {
   const searchValue = this.value.toLowerCase().trim();
@@ -361,7 +361,7 @@ parkSearchInput.addEventListener('change', function () {
   }
 });
 
-// --- Tree Search ---
+// Tree Search
 const treeSearchInput = document.getElementById('treeSearch');
 treeSearchInput.addEventListener('change', function () {
   const searchValue = this.value.toLowerCase().trim();
@@ -405,7 +405,7 @@ treeSearchInput.addEventListener('change', function () {
   }
 });
 
-// --- Clear Icon Selection on Search Focus ---
+// Clear Icon Selection on Search Focus
 function clearIconSelection() {
   document.querySelectorAll('.elementButton').forEach(btn => btn.classList.remove('selected'));
   activeElementFilters = [];
