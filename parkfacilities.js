@@ -377,9 +377,10 @@ treeSearchInput.addEventListener('change', function () {
     const diameter = (props.Diameter || "").toString();
 
     if ((isNumericSearch && (siteId === searchValue || diameter === searchValue)) ||
-        (!isNumericSearch && searchTerms.some(term => species.includes(term)))) {
-      matchingTrees.push(layer);
-    }
+    (!isNumericSearch && searchTerms.every(term => species.includes(term)))) {
+  matchingTrees.push(layer);
+}
+
   });
 
   if (matchingTrees.length > 0) {
