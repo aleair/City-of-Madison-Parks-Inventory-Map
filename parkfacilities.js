@@ -63,10 +63,6 @@ db.collection('reports').onSnapshot(snap => {
 });
 
 /* -------------------- (NEW) TOGGLE REPORTED PROBLEMS LAYER -------------------- */
-// Requires this HTML somewhere near your other toggles:
-// <label id="toggleReportsLabel" class="toggleLayer">
-//   <input type="checkbox" id="toggleReports" checked> Reported Problems
-// </label>
 const toggleReports = document.getElementById('toggleReports');
 if (toggleReports) {
   toggleReports.addEventListener('change', function () {
@@ -193,6 +189,13 @@ fetch('data/yearround.geojson')
         createPopupContent(feature, layer);
       }
     }).addTo(map);
+
+    /* -------------------- STATUS FILTER: honor initial state -------------------- */
+    const toggleStatusEl = document.getElementById('toggleStatus');
+    if (toggleStatusEl && toggleStatusEl.checked) {
+      applyStatusFilter(true);
+    }
+    /* -------------------------------------------------------------------------- */
   });
 
 // Popup Content Creation
@@ -259,6 +262,11 @@ function createPopupContent(feature, layer) {
         setTimeout(() => {
           createPopupContent(feature, layer);
           layer.openPopup();
+          /* --- STATUS FILTER: re-apply after admin change --- */
+          const toggleStatusEl = document.getElementById('toggleStatus');
+          if (toggleStatusEl && toggleStatusEl.checked) {
+            applyStatusFilter(true);
+          }
         }, 300);
       });
     }
@@ -405,10 +413,43 @@ fetch('data/ParkTrees.geojson')
 document.getElementById('toggleFacilities').addEventListener('change', function () {
   if (this.checked) {
     map.addLayer(facilitiesLayer);
+    /* --- STATUS FILTER: re-apply when facilities are turned back on --- */
+    const toggleStatusEl = document.getElementById('toggleStatus');
+    if (toggleStatusEl && toggleStatusEl.checked) {
+      applyStatusFilter(true);
+    }
   } else {
     map.removeLayer(facilitiesLayer);
   }
 });
+
+/* -------------------- STATUS FILTER: checkbox handler -------------------- */
+function applyStatusFilter(showOpenExisting) {
+  if (!facilitiesLayer) return;
+
+  if (showOpenExisting) {
+    facilitiesLayer.eachLayer(layer => {
+      const status = (layer.feature?.properties?.Status || "").toLowerCase();
+      if (status === "open" || status === "existing") {
+        map.addLayer(layer);
+      } else {
+        map.removeLayer(layer);
+      }
+    });
+  } else {
+    facilitiesLayer.eachLayer(layer => {
+      map.addLayer(layer);
+    });
+  }
+}
+
+const toggleStatusEl = document.getElementById('toggleStatus');
+if (toggleStatusEl) {
+  toggleStatusEl.addEventListener('change', function () {
+    applyStatusFilter(this.checked);
+  });
+}
+/* ----------------------------------------------------------------------- */
 
 // Login
 document.getElementById('loginButton').addEventListener('click', function () {
@@ -422,7 +463,7 @@ document.getElementById('loginButton').addEventListener('click', function () {
   }
 });
 
-// Restore Facilities after use moves screen
+// Restore Facilities after user moves screen
 map.on('moveend', function () {
   if (userMoved && facilitiesLayer) {
     const facilitiesToggle = document.getElementById('toggleFacilities');
@@ -435,6 +476,11 @@ map.on('moveend', function () {
           }
         }
       });
+      // Re-apply status filter if active
+      const toggleStatusEl = document.getElementById('toggleStatus');
+      if (toggleStatusEl && toggleStatusEl.checked) {
+        applyStatusFilter(true);
+      }
     }
   }
 });
@@ -477,6 +523,12 @@ parkSearchInput.addEventListener('change', function () {
     });
   } else {
     alert("No matching Park, Facility, Status, or Unique ID found.");
+  }
+
+  // Re-apply status filter if it's on
+  const toggleStatusEl = document.getElementById('toggleStatus');
+  if (toggleStatusEl && toggleStatusEl.checked) {
+    applyStatusFilter(true);
   }
 });
 
@@ -529,6 +581,12 @@ function clearIconSelection() {
   document.querySelectorAll('.elementButton').forEach(btn => btn.classList.remove('selected'));
   activeElementFilters = [];
   showAllFacilities();
+
+  // Re-apply status filter if it's on
+  const toggleStatusEl = document.getElementById('toggleStatus');
+  if (toggleStatusEl && toggleStatusEl.checked) {
+    applyStatusFilter(true);
+  }
 }
 parkSearchInput.addEventListener('focus', clearIconSelection);
 treeSearchInput.addEventListener('focus', clearIconSelection);
