@@ -73,6 +73,9 @@
     #toggleTreesLabel { top: 70px; right: 33px; }
     #toggleFacilitiesLabel { top: 40px; right: 10px; }
     #toggleReportsLabel { top: 100px; right: 26px; }
+    #toggleStatusLabel { top: 130px; right: 33px; }
+
+    
 
 
 
@@ -132,28 +135,29 @@
       <option value="aerial">Aerial Photography</option>
     </select>
 
-    <!-- Login Button moved next to Basemap -->
     <button id="loginButton">Login</button>
 
-    <!-- Toggle Parks -->
     <label id="toggleParksLabel" class="toggleLayer">
       <input type="checkbox" id="toggleParks" checked> Parks
     </label>
 
-    <!-- Toggle Trees -->
     <label id="toggleTreesLabel" class="toggleLayer">
       <input type="checkbox" id="toggleTrees"> Trees
     </label>
 
-    <!-- Toggle Reported Problems -->
     <label id="toggleReportsLabel" class="toggleLayer">
       <input type="checkbox" id="toggleReports" checked> Issues
     </label>
 
-    <!-- Toggle Facilities -->
+    
     <label id="toggleFacilitiesLabel" class="toggleLayer">
       <input type="checkbox" id="toggleFacilities" checked> Facilities
     </label>
+    
+    <label id="toggleStatusLabel" class="toggleLayer">
+      <input type="checkbox" id="toggleStatus"> Open  
+    </label>
+
 
     <!-- Park Search Box -->
     <input type="text" id="parkSearch" placeholder="Parks, Facilities, or Status..." />
