@@ -54,7 +54,7 @@
     }
 
     #basemapDropdown { bottom: 10px; left: 10px; height: 34px; }
-    #loginButton { bottom: 10px; left: 175px; height: 34px; } /* moved right of dropdown */
+    #loginButton { bottom: 10px; left: 175px; height: 34px; } 
     #treeSearch { bottom: 10px; right: 200px; width: 170px; height: 25px; }
     #parkSearch { bottom: 10px; right: 10px; width: 170px; height: 25px; }
     #mobilePromptButton { bottom: 10px; left: 50%; transform: translateX(-50%); font-size: 11px; height: 34px; cursor: default; pointer-events: none; }
@@ -67,8 +67,14 @@
       padding: 5px;
       position: absolute;
     }
-    #toggleTreesLabel { top: 10px; right: 33px; }
+
+    /* position the Parks toggle under Facilities */
+    #toggleParksLabel { top: 10px; right: 32px; }
+    #toggleTreesLabel { top: 70px; right: 33px; }
     #toggleFacilitiesLabel { top: 40px; right: 10px; }
+    #toggleReportsLabel { top: 100px; right: 26px; }
+
+
 
     #parkList {
       padding: 10px;
@@ -129,11 +135,20 @@
     <!-- Login Button moved next to Basemap -->
     <button id="loginButton">Login</button>
 
+    <!-- Toggle Parks -->
+    <label id="toggleParksLabel" class="toggleLayer">
+      <input type="checkbox" id="toggleParks" checked> Parks
+    </label>
+
     <!-- Toggle Trees -->
     <label id="toggleTreesLabel" class="toggleLayer">
       <input type="checkbox" id="toggleTrees"> Trees
     </label>
-    
+
+    <!-- Toggle Reported Problems -->
+    <label id="toggleReportsLabel" class="toggleLayer">
+      <input type="checkbox" id="toggleReports" checked> Issues
+    </label>
 
     <!-- Toggle Facilities -->
     <label id="toggleFacilitiesLabel" class="toggleLayer">

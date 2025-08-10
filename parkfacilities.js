@@ -33,6 +33,53 @@ basemapDropdown.addEventListener('change', function () {
   }
 });
 
+/* -------------------- (1) REPORTED PROBLEMS LAYER + LIVE RENDER -------------------- */
+const reportsLayer = L.featureGroup().addTo(map);
+
+db.collection('reports').onSnapshot(snap => {
+  reportsLayer.clearLayers();
+  snap.forEach(doc => {
+    const r = doc.data();
+    if (r.lat && r.lng) {
+      L.circleMarker([r.lat, r.lng], {
+        radius: 6,
+        weight: 2,
+        color: '#cc0000',
+        fillColor: '#ff6666',
+        fillOpacity: 0.9
+      }).bindPopup(`
+        <div>
+          <h4 style="margin:0 0 6px">Reported Problem</h4>
+          <p><strong>Facility:</strong> ${r.facilityElement || ''} (${r.facilityFID || ''})</p>
+          <p><strong>Park:</strong> ${r.parkName || ''}</p>
+          <p><strong>Name:</strong> ${r.name || 'Anonymous'}</p>
+          <p><strong>Phone:</strong> ${r.phone || ''}</p>
+          <p><strong>Concern:</strong> ${r.concern || ''}</p>
+          <p><small>${r.createdAt || ''}</small></p>
+        </div>
+      `).addTo(reportsLayer);
+    }
+  });
+});
+
+/* -------------------- (NEW) TOGGLE REPORTED PROBLEMS LAYER -------------------- */
+// Requires this HTML somewhere near your other toggles:
+// <label id="toggleReportsLabel" class="toggleLayer">
+//   <input type="checkbox" id="toggleReports" checked> Reported Problems
+// </label>
+const toggleReports = document.getElementById('toggleReports');
+if (toggleReports) {
+  toggleReports.addEventListener('change', function () {
+    if (!reportsLayer) return;
+    if (this.checked) {
+      map.addLayer(reportsLayer);
+    } else {
+      map.removeLayer(reportsLayer);
+    }
+  });
+}
+/* ----------------------------------------------------------------------------- */
+
 // Facility Icons
 const availableIcons = [
   "basketball-other", "basketballcourt-full", "basketballcourt-half", "basketballcourt-smallfullcourt",
@@ -176,6 +223,12 @@ function createPopupContent(feature, layer) {
     popupContent += `<p><strong>Status:</strong> ${feature.properties.Status}</p>`;
   }
 
+  // Add report link
+  popupContent += `
+    <hr>
+    <a href="#" id="reportIssueLink">Report an issue with this facility</a>
+  `;
+
   popupContent += `</div>`;
 
   layer.bindPopup(popupContent);
@@ -209,7 +262,73 @@ function createPopupContent(feature, layer) {
         }, 300);
       });
     }
+
+    // Hook the report link
+    const reportLink = document.getElementById('reportIssueLink');
+    if (reportLink) {
+      reportLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        const latlng = layer.getLatLng ? layer.getLatLng() : map.getCenter();
+        openReportForm(feature, latlng);
+      });
+    }
   });
+}
+
+function openReportForm(feature, latlng) {
+  const formHtml = `
+    <div style="min-width:240px">
+      <h4 style="margin:0 0 6px">Report an Issue</h4>
+      <p style="margin:0 0 8px">
+        <strong>${feature.properties.ELEMENT || ''}</strong><br>
+        <small>${feature.properties.PARK_NAME || ''} — ID ${feature.properties.FID || ''}</small>
+      </p>
+      <form id="reportForm">
+        <label>Name<br><input type="text" id="r_name" style="width:100%"></label><br><br>
+        <label>Phone<br><input type="tel" id="r_phone" style="width:100%"></label><br><br>
+        <label>Concern<br><textarea id="r_concern" rows="3" style="width:100%"></textarea></label><br><br>
+        <button type="submit" id="r_submit">Submit</button>
+      </form>
+    </div>
+  `;
+
+  const p = L.popup({ maxWidth: 320 })
+    .setLatLng(latlng)
+    .setContent(formHtml)
+    .openOn(map);
+
+  setTimeout(() => {
+    const form = document.getElementById('reportForm');
+    if (!form) return;
+    form.addEventListener('submit', async (ev) => {
+      ev.preventDefault();
+      const name = (document.getElementById('r_name').value || '').trim();
+      const phone = (document.getElementById('r_phone').value || '').trim();
+      const concern = (document.getElementById('r_concern').value || '').trim();
+
+      if (!concern) {
+        alert('Please describe the concern.');
+        return;
+      }
+
+      const now = new Date();
+      const createdAt = now.toLocaleString('en-US', { timeZone: 'America/Chicago' });
+
+      try {
+        await db.collection('reports').add({
+          name, phone, concern, createdAt,
+          lat: latlng.lat, lng: latlng.lng,
+          facilityFID: feature.properties.FID || null,
+          facilityElement: feature.properties.ELEMENT || null,
+          parkName: feature.properties.PARK_NAME || null
+        });
+        p.setContent('<p>Thanks! Your report has been submitted.</p>');
+      } catch (err) {
+        console.error(err);
+        alert('Could not submit the report. Please try again.');
+      }
+    });
+  }, 0);
 }
 
 // Load Parks Layer
@@ -377,10 +496,9 @@ treeSearchInput.addEventListener('change', function () {
     const diameter = (props.Diameter || "").toString();
 
     if ((isNumericSearch && (siteId === searchValue || diameter === searchValue)) ||
-    (!isNumericSearch && searchTerms.every(term => species.includes(term)))) {
-  matchingTrees.push(layer);
-}
-
+        (!isNumericSearch && searchTerms.every(term => species.includes(term)))) {
+      matchingTrees.push(layer);
+    }
   });
 
   if (matchingTrees.length > 0) {
@@ -414,4 +532,3 @@ function clearIconSelection() {
 }
 parkSearchInput.addEventListener('focus', clearIconSelection);
 treeSearchInput.addEventListener('focus', clearIconSelection);
-
