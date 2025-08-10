@@ -340,6 +340,7 @@ function openReportForm(feature, latlng) {
 }
 
 // Load Parks Layer
+// Load Parks Layer
 fetch('data/Parks.geojson')
   .then(response => response.json())
   .then(data => {
@@ -352,13 +353,32 @@ fetch('data/Parks.geojson')
       }
     }).addTo(map);
 
+    // --- Parks checkbox toggle ---
+    const toggleParksEl = document.getElementById('toggleParks');
+    if (toggleParksEl) {
+      // Honor initial state on load
+      if (!toggleParksEl.checked && parksLayer) {
+        map.removeLayer(parksLayer);
+      }
+
+      toggleParksEl.addEventListener('change', function () {
+        if (!parksLayer) return;
+        if (this.checked) {
+          map.addLayer(parksLayer);
+        } else {
+          map.removeLayer(parksLayer);
+        }
+      });
+    }
+    // -----------------------------
+
     const parkNamesList = document.getElementById('parkNames');
     const parks = [];
 
     parksLayer.eachLayer(layer => {
       const parkName = layer.feature.properties?.Park_Name;
       if (parkName) {
-        parks.push({ name: parkName, layer: layer });
+        parks.push({ name: parkName, layer });
       }
     });
 
@@ -368,12 +388,19 @@ fetch('data/Parks.geojson')
       const li = document.createElement('li');
       li.textContent = park.name;
       li.addEventListener('click', () => {
+        // Ensure parks layer is visible before zooming
+        if (parksLayer && !map.hasLayer(parksLayer)) {
+          map.addLayer(parksLayer);
+          const t = document.getElementById('toggleParks');
+          if (t) t.checked = true;
+        }
         map.fitBounds(park.layer.getBounds(), { maxZoom: 16 });
         park.layer.openPopup();
       });
       parkNamesList.appendChild(li);
     });
   });
+
 
 // Load Trees Layer
 fetch('data/ParkTrees.geojson')
